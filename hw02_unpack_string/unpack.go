@@ -3,6 +3,7 @@ package hw02unpackstring
 import (
 	"errors"
 	"strconv"
+	"strings"
 	"unicode"
 )
 
@@ -36,15 +37,12 @@ func Unpack(str string) (string, error) {
 				prev = string(char)
 				escape = false
 				continue
-			}
-			if prev == "" {
+			} else if prev == "" {
 				err = ErrInvalidString
 				break
 			} else {
 				multiplicity, _ := strconv.Atoi(string(char))
-				for i := multiplicity; i > 0; i-- {
-					res = res + prev
-				}
+				res = res + strings.Repeat(prev, multiplicity)
 				prev = ""
 			}
 		}
