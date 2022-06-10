@@ -10,7 +10,7 @@ import (
 var ErrInvalidString = errors.New("invalid string")
 
 func Unpack(str string) (string, error) {
-	var res, prev string
+	var result, prev string
 	var err error
 	var escape bool = false
 
@@ -22,39 +22,49 @@ func Unpack(str string) (string, error) {
 				continue
 			}
 			escape = true
-			res = res + prev
+			result = result + prev
 			continue
-		} else if unicode.IsLetter(char) {
+		}
+
+		if unicode.IsLetter(char) {
 			if prev == "" {
 				prev = string(char)
 			} else {
-				res = res + prev
+				result = result + prev
 				prev = string(char)
 			}
 			escape = false
-		} else if unicode.IsDigit(char) {
+			continue
+		}
+
+		if unicode.IsDigit(char) {
+			if prev == "" {
+				err = ErrInvalidString
+				break
+			}
+
 			if escape {
 				prev = string(char)
 				escape = false
 				continue
-			} else if prev == "" {
-				err = ErrInvalidString
-				break
-			} else {
-				multiplicity, _ := strconv.Atoi(string(char))
-				res = res + strings.Repeat(prev, multiplicity)
-				prev = ""
 			}
+
+			multiplicity, _ := strconv.Atoi(string(char))
+			result = result + strings.Repeat(prev, multiplicity)
+			prev = ""
 		}
 	}
-	if prev != "" {
-		res = res + prev
-	}
-
 	if escape {
-		res = ""
 		err = ErrInvalidString
 	}
 
-	return res, err
+	if prev != "" {
+		result = result + prev
+	}
+
+	if err != nil {
+		return "", err
+	}
+
+	return result, err
 }
