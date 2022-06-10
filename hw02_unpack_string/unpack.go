@@ -26,17 +26,6 @@ func Unpack(str string) (string, error) {
 			continue
 		}
 
-		if unicode.IsLetter(char) {
-			if prev == "" {
-				prev = string(char)
-			} else {
-				result = result + prev
-				prev = string(char)
-			}
-			escape = false
-			continue
-		}
-
 		if unicode.IsDigit(char) {
 			if prev == "" {
 				err = ErrInvalidString
@@ -52,7 +41,16 @@ func Unpack(str string) (string, error) {
 			multiplicity, _ := strconv.Atoi(string(char))
 			result = result + strings.Repeat(prev, multiplicity)
 			prev = ""
+			continue
 		}
+
+		if prev == "" {
+			prev = string(char)
+		} else {
+			result = result + prev
+			prev = string(char)
+		}
+		escape = false
 	}
 	if escape {
 		err = ErrInvalidString
