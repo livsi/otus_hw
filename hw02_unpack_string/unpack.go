@@ -12,7 +12,7 @@ var ErrInvalidString = errors.New("invalid string")
 func Unpack(str string) (string, error) {
 	var result, prev string
 	var err error
-	var escape bool = false
+	var escape = false
 
 	for _, char := range str {
 		if string(char) == `\` {
@@ -22,7 +22,7 @@ func Unpack(str string) (string, error) {
 				continue
 			}
 			escape = true
-			result = result + prev
+			result += prev
 			continue
 		}
 
@@ -39,7 +39,7 @@ func Unpack(str string) (string, error) {
 			}
 
 			multiplicity, _ := strconv.Atoi(string(char))
-			result = result + strings.Repeat(prev, multiplicity)
+			result += strings.Repeat(prev, multiplicity)
 			prev = ""
 			continue
 		}
@@ -47,7 +47,7 @@ func Unpack(str string) (string, error) {
 		if prev == "" {
 			prev = string(char)
 		} else {
-			result = result + prev
+			result += prev
 			prev = string(char)
 		}
 		escape = false
@@ -57,7 +57,7 @@ func Unpack(str string) (string, error) {
 	}
 
 	if prev != "" {
-		result = result + prev
+		result += prev
 	}
 
 	if err != nil {
