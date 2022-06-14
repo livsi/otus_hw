@@ -12,7 +12,7 @@ var ErrInvalidString = errors.New("invalid string")
 func Unpack(str string) (string, error) {
 	var result, prev string
 	var err error
-	var escape = false
+	escape := false
 
 	for _, char := range str {
 		if string(char) == `\` {
