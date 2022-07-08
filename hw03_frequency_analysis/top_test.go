@@ -1,8 +1,9 @@
-package hw03frequencyanalysis
+package hw03frequencyanalysis_test
 
 import (
 	"testing"
 
+	top "github.com/livsi/otus_hw/hw03_frequency_analysis"
 	"github.com/stretchr/testify/require"
 )
 
@@ -47,7 +48,7 @@ var text2 = "он он он да, да гуси-гуси га-га-га"
 
 func TestTop10(t *testing.T) {
 	t.Run("no words in empty string", func(t *testing.T) {
-		require.Len(t, Top10(""), 0)
+		require.Len(t, top.Top10(""), 0)
 	})
 
 	t.Run("positive test", func(t *testing.T) {
@@ -64,7 +65,7 @@ func TestTop10(t *testing.T) {
 				"кристофер", // 4
 				"не",        // 4
 			}
-			require.Equal(t, expected, Top10(text))
+			require.Equal(t, expected, top.Top10(text))
 		} else {
 			expected := []string{
 				"он",        // 8
@@ -78,7 +79,7 @@ func TestTop10(t *testing.T) {
 				"не",        // 4
 				"то",        // 4
 			}
-			require.Equal(t, expected, Top10(text))
+			require.Equal(t, expected, top.Top10(text))
 		}
 	})
 
@@ -90,7 +91,7 @@ func TestTop10(t *testing.T) {
 				"га-га-га",  // 1
 				"гуси-гуси", // 1
 			}
-			require.Equal(t, expected, Top10(text2))
+			require.Equal(t, expected, top.Top10(text2))
 		} else {
 			expected := []string{
 				"он",        // 3
@@ -99,7 +100,7 @@ func TestTop10(t *testing.T) {
 				"да",        // 1
 				"да,",       // 1
 			}
-			require.Equal(t, expected, Top10(text2))
+			require.Equal(t, expected, top.Top10(text2))
 		}
 	})
 }
