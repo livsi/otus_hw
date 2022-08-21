@@ -66,6 +66,7 @@ func TestCache(t *testing.T) {
 
 	t.Run("clear cache test", func(t *testing.T) {
 		c := NewCache(3)
+		c.Clear()
 		_ = c.Set("first", 1)
 		_ = c.Set("second", 2)
 		_ = c.Set("Third", 3)
