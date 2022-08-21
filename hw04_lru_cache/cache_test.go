@@ -49,8 +49,31 @@ func TestCache(t *testing.T) {
 		require.Nil(t, val)
 	})
 
-	t.Run("purge logic", func(t *testing.T) {
-		// Write me
+	t.Run("extrusion cache logic", func(t *testing.T) {
+		c := NewCache(3)
+		_ = c.Set("first", 1)
+		_ = c.Set("second", 2)
+		_ = c.Set("Third", 3)
+		_ = c.Set("Fourth", 4)
+		first, ok := c.Get("first")
+		require.False(t, ok)
+		require.Nil(t, first)
+
+		second, ok := c.Get("second")
+		require.True(t, ok)
+		require.Equal(t, second, 2)
+	})
+
+	t.Run("clear cache test", func(t *testing.T) {
+		c := NewCache(3)
+		c.Clear()
+		_ = c.Set("first", 1)
+		_ = c.Set("second", 2)
+		_ = c.Set("Third", 3)
+		c.Clear()
+		val, ok := c.Get("second")
+		require.False(t, ok)
+		require.Nil(t, val)
 	})
 }
 
