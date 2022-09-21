@@ -11,7 +11,6 @@ type Task func() error
 
 // Run starts tasks in workersCount goroutines and stops its work when receiving maxErrorsCount errors from tasks.
 func Run(tasks []Task, workersCount, maxErrorsCount int) error {
-
 	var errorsCount int
 	chanTask := make(chan Task)
 	wg := sync.WaitGroup{}
