@@ -36,7 +36,7 @@ func Run(tasks []Task, workersCount, maxErrorsCount int) error {
 		}()
 	}
 
-	go func() {
+	func() {
 		defer close(chanTask)
 		for _, task := range tasks {
 			mu.Lock()
