@@ -38,7 +38,7 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 	switch {
 	case limit == 0:
 		mustBytesRead = size - offset
-	case limit > (size - offset):
+	case limit < (size - offset):
 		mustBytesRead = limit
 	default:
 		mustBytesRead = size - offset
