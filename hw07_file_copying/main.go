@@ -1,22 +1,34 @@
 package main
 
 import (
+	"errors"
 	"flag"
+	"log"
 )
 
 var (
-	from, to      string
-	limit, offset int64
+	from, to         string
+	limit, offset    int64
+	ErrInvalidParams = errors.New("error in input params")
 )
 
 func init() {
 	flag.StringVar(&from, "from", "", "file to read from")
 	flag.StringVar(&to, "to", "", "file to write to")
-	flag.Int64Var(&limit, "limit", 0, "limit of bytes to copy")
-	flag.Int64Var(&offset, "offset", 0, "offset in input file")
+	flag.Int64Var(&limit, "limit", 0, "limit of bytes to copy, ≥ 0")
+	flag.Int64Var(&offset, "offset", 0, "offset in input file, ≥ 0")
 }
 
 func main() {
 	flag.Parse()
-	// Place your code here.
+
+	if from == "" || to == "" || offset < 0 || limit < 0 {
+		flag.Usage()
+		log.Fatal(ErrInvalidParams)
+	}
+
+	if err := Copy(from, to, offset, limit); err != nil {
+		flag.Usage()
+		log.Fatal(err)
+	}
 }
