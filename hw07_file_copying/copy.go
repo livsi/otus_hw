@@ -64,7 +64,7 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 
 		if limit > 0 && bytesRead == limit {
 			break
-		} else if bytesRead == size-offset {
+		} else if bytesRead == (size - offset) {
 			break
 		}
 	}
@@ -73,10 +73,8 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 }
 
 func closeFile(f *os.File) {
-	err := f.Close()
-
-	if err != nil {
-		_ = fmt.Errorf("error: %v\n", err)
+	if err := f.Close(); err != nil {
+		_ = fmt.Errorf("error: %w", err)
 		os.Exit(1)
 	}
 }
