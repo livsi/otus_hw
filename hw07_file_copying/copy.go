@@ -4,7 +4,10 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"math"
 	"os"
+
+	"github.com/cheggaaa/pb/v3"
 )
 
 var (
@@ -62,7 +65,12 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 
 	var bytesRead int64
 	bytesRead = 0
+
+	count := (int)(math.Ceil(float64(mustBytesRead) / float64(defaultBuf)))
+	bar := pb.StartNew(count)
+
 	for {
+		bar.Increment()
 		chunk, err := source.Read(buf)
 		if err != nil && err != io.EOF {
 			return err
@@ -76,7 +84,7 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 			break
 		}
 	}
-
+	bar.Finish()
 	return nil
 }
 
