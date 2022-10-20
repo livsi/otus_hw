@@ -33,6 +33,16 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 	if offset > size {
 		return ErrOffsetExceedsFileSize
 	}
+	var mustBytesRead int64
+
+	switch {
+	case limit == 0:
+		mustBytesRead = size - offset
+	case limit > (size - offset):
+		mustBytesRead = limit
+	default:
+		mustBytesRead = size - offset
+	}
 
 	dest, err := os.Create(toPath)
 	if err != nil {
@@ -62,9 +72,7 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 			return err
 		}
 
-		if limit > 0 && bytesRead == limit {
-			break
-		} else if bytesRead == (size - offset) {
+		if mustBytesRead == bytesRead {
 			break
 		}
 	}
