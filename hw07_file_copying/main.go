@@ -1,15 +1,13 @@
 package main
 
 import (
-	"errors"
 	"flag"
 	"log"
 )
 
 var (
-	from, to         string
-	limit, offset    int64
-	ErrInvalidParams = errors.New("error in input params")
+	from, to      string
+	limit, offset int64
 )
 
 func init() {
@@ -21,11 +19,6 @@ func init() {
 
 func main() {
 	flag.Parse()
-
-	if from == "" || to == "" || offset < 0 || limit < 0 {
-		flag.Usage()
-		log.Fatal(ErrInvalidParams)
-	}
 
 	if err := Copy(from, to, offset, limit); err != nil {
 		flag.Usage()

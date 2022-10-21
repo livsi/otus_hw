@@ -11,12 +11,17 @@ import (
 )
 
 var (
+	ErrInvalidParams         = errors.New("error in input params")
 	ErrUnsupportedFile       = errors.New("unsupported file")
 	ErrOffsetExceedsFileSize = errors.New("offset exceeds file size")
 	ErrOnCreateDestFile      = errors.New("err on create dest file")
 )
 
 func Copy(fromPath, toPath string, offset, limit int64) error {
+	if fromPath == "" || toPath == "" || offset < 0 || limit < 0 {
+		return ErrInvalidParams
+	}
+
 	source, err := os.Open(fromPath)
 	if err != nil {
 		return fmt.Errorf("open file error %s: %w", fromPath, err)
