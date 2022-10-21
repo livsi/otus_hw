@@ -9,7 +9,86 @@ import (
 )
 
 func TestCopy(t *testing.T) {
-	testsErrors := []struct {
+	tests := []struct {
+		name            string
+		source          string
+		dest            string
+		expectedContent string
+		offset          int64
+		limit           int64
+	}{
+		{
+			name:            "full copy",
+			source:          "testdata/input.txt",
+			dest:            "out.txt",
+			expectedContent: "testdata/input.txt",
+			offset:          0,
+			limit:           0,
+		},
+		{
+			name:            "out_offset0_limit10",
+			source:          "testdata/input.txt",
+			dest:            "out.txt",
+			expectedContent: "testdata/out_offset0_limit10.txt",
+			offset:          0,
+			limit:           10,
+		},
+		{
+			name:            "out_offset0_limit1000",
+			source:          "testdata/input.txt",
+			dest:            "out.txt",
+			expectedContent: "testdata/out_offset0_limit1000.txt",
+			offset:          0,
+			limit:           1000,
+		},
+		{
+			name:            "out_offset0_limit10000",
+			source:          "testdata/input.txt",
+			dest:            "out.txt",
+			expectedContent: "testdata/out_offset0_limit10000.txt",
+			offset:          0,
+			limit:           10000,
+		},
+		{
+			name:            "out_offset100_limit1000",
+			source:          "testdata/input.txt",
+			dest:            "out.txt",
+			expectedContent: "testdata/out_offset100_limit1000.txt",
+			offset:          100,
+			limit:           1000,
+		},
+		{
+			name:            "out_offset6000_limit1000",
+			source:          "testdata/input.txt",
+			dest:            "out.txt",
+			expectedContent: "testdata/out_offset6000_limit1000.txt",
+			offset:          6000,
+			limit:           1000,
+		},
+	}
+
+	for _, tc := range tests {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			err := Copy(tc.source, tc.dest, tc.offset, tc.limit)
+			defer func() {
+				err := os.Remove(tc.dest)
+				if err != nil {
+					fmt.Printf("error on remove file: %v", err)
+				}
+			}()
+			require.Nil(t, err)
+
+			expectedContent, _ := os.ReadFile(tc.expectedContent)
+			dest, _ := os.ReadFile(tc.dest)
+
+			require.Equal(t, expectedContent, dest)
+		})
+	}
+}
+
+func TestErrors(t *testing.T) {
+	tests := []struct {
 		name    string
 		source  string
 		dest    string
@@ -74,7 +153,7 @@ func TestCopy(t *testing.T) {
 		},
 	}
 
-	for _, tc := range testsErrors {
+	for _, tc := range tests {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			err := Copy(tc.source, tc.dest, tc.offset, tc.limit)
@@ -82,83 +161,6 @@ func TestCopy(t *testing.T) {
 			if tc.errorIs != nil {
 				require.ErrorIs(t, err, tc.errorIs)
 			}
-		})
-	}
-
-	testsPositive := []struct {
-		name            string
-		source          string
-		dest            string
-		expectedContent string
-		offset          int64
-		limit           int64
-	}{
-		{
-			name:            "full copy",
-			source:          "testdata/input.txt",
-			dest:            "out.txt",
-			expectedContent: "testdata/input.txt",
-			offset:          0,
-			limit:           0,
-		},
-		{
-			name:            "out_offset0_limit10",
-			source:          "testdata/input.txt",
-			dest:            "out.txt",
-			expectedContent: "testdata/out_offset0_limit10.txt",
-			offset:          0,
-			limit:           10,
-		},
-		{
-			name:            "out_offset0_limit1000",
-			source:          "testdata/input.txt",
-			dest:            "out.txt",
-			expectedContent: "testdata/out_offset0_limit1000.txt",
-			offset:          0,
-			limit:           1000,
-		},
-		{
-			name:            "out_offset0_limit10000",
-			source:          "testdata/input.txt",
-			dest:            "out.txt",
-			expectedContent: "testdata/out_offset0_limit10000.txt",
-			offset:          0,
-			limit:           10000,
-		},
-		{
-			name:            "out_offset100_limit1000",
-			source:          "testdata/input.txt",
-			dest:            "out.txt",
-			expectedContent: "testdata/out_offset100_limit1000.txt",
-			offset:          100,
-			limit:           1000,
-		},
-		{
-			name:            "out_offset6000_limit1000",
-			source:          "testdata/input.txt",
-			dest:            "out.txt",
-			expectedContent: "testdata/out_offset6000_limit1000.txt",
-			offset:          6000,
-			limit:           1000,
-		},
-	}
-
-	for _, tc := range testsPositive {
-		tc := tc
-		t.Run(tc.name, func(t *testing.T) {
-			err := Copy(tc.source, tc.dest, tc.offset, tc.limit)
-			defer func() {
-				err := os.Remove(tc.dest)
-				if err != nil {
-					fmt.Printf("error on remove file: %v", err)
-				}
-			}()
-			require.Nil(t, err)
-
-			expectedContent, _ := os.ReadFile(tc.expectedContent)
-			dest, _ := os.ReadFile(tc.dest)
-
-			require.Equal(t, expectedContent, dest)
 		})
 	}
 }
